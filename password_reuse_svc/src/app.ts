@@ -9,7 +9,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Password score service');
+    res.send('Password is being reused service');
 });
 
 app.post("/api/password/score", async (req, res, next) => {
