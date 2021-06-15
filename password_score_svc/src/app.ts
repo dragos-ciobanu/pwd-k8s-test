@@ -1,4 +1,5 @@
 import express from 'express';
+import {PasswordScore} from "./PasswordScore";
 
 const app = express();
 const port = 3000;
@@ -8,8 +9,10 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Password score service');
+app.get('/api/password/score/:password', (req, res) => {
+    const passwordText: string = req.params.password;
+    const passwordScore = PasswordScore.getScore(passwordText);
+    res.send(`Score for ${passwordText} is: ${passwordScore}`);
 });
 
 app.post("/api/password/score", async (req, res, next) => {
