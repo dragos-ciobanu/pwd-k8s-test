@@ -2,27 +2,29 @@ import express from 'express';
 import {PasswordScore} from "./PasswordScore";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3001;
 
 app.use(express.urlencoded({
     extended: true
 }));
-app.use(express.json());
 
-app.get('/api/password/score/:password', (req, res) => {
-    const passwordText: string = req.params.password;
-    const passwordScore = PasswordScore.getScore(passwordText);
-    res.send(`Score for ${passwordText} is: ${passwordScore}`);
-});
+app.use(express.json());
 
 app.post("/api/password/score", async (req, res, next) => {
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         const passwordText: string = req.body.password;
-        res.json({passwordText});
+
+        const passwordScore = PasswordScore.getScore(passwordText);
+        const response = {
+            score: passwordScore
+        };
+        res.json(response);
     } catch (error) {
         next(error)
     }
-})
+});
 
 app.listen(port, () => {
     return console.log(`server is listening on ${port}`);

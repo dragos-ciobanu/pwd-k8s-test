@@ -3,7 +3,7 @@ import {HttpAdapter} from "./HttpAdapter";
 import {PasswordList} from "./PasswordList";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3002;
 
 app.use(express.urlencoded({
     extended: true
@@ -14,23 +14,25 @@ app.get('/', (req, res) => {
     res.send('Password is common service');
 });
 
-app.get('/api/password/common/:password', (req, res) => {
-    const passwordText: string = req.params.password;
-    const storageAdapter = new HttpAdapter("https://pwlist.cfapps.eu10.hana.ondemand.com/passwords.txt")
-    const passwordListProvider: PasswordList = new PasswordList(storageAdapter);
-    passwordListProvider.findAsync(passwordText).then((isFound: boolean) => {
-        res.send(`Score for ${passwordText} is: ${isFound ? "common" : "uncommon"}`);
-    });
-});
-
-app.post("/api/password/score", async (req, res, next) => {
+app.post("/api/password/common", async (req, res, next) => {
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+
         const passwordText: string = req.body.password;
-        res.json({passwordText});
+        const storageAdapter = new HttpAdapter("https://pwlist.cfapps.eu10.hana.ondemand.com/passwords.txt")
+        const passwordListProvider: PasswordList = new PasswordList(storageAdapter);
+        passwordListProvider.findAsync(passwordText).then((isFound: boolean) => {
+            const response = {
+                isCommon: isFound
+            };
+
+            res.json(response);
+        });
     } catch (error) {
         next(error)
     }
-})
+});
 
 app.listen(port, () => {
     return console.log(`server is listening on ${port}`);
