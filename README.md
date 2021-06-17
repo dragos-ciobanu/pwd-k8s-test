@@ -25,3 +25,9 @@
 ### give a URL to external service in minikube
 
     minikube service frontend-service
+
+
+### Clean up
+    kubectl delete -f ./k8s_config
+    minikube stop
+
