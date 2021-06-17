@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: password-configmap
+data:
+  password-score-url: score_service
+  password-common-url: common_service
+  password-reuse-url: reuse_service
+

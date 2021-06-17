@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-frontend
+  template:
+    metadata:
+      labels:
+        app: nodejs-frontend
+    spec:
+      containers:
+        - name: nodejs-frontend
+          image: dragosc/node-password-frontend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: PASSWORD_SCORE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: password-configmap
+                  key: password-score-url
+            - name: PASSWORD_COMMON_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: password-configmap
+                  key: password-common-url
+            - name: PASSWORD_REUSE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: password-configmap
+                  key: password-reuse-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nodejs-frontend
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      nodePort: 30000
+---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: minimal-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+#spec:
+#  rules:
+#    - host: myapp.com.d
+#    - http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: nginx
+#                port:
+#                  number: 8080
+---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: my-dashboard-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+#spec:
+#  rules:
+#    - host: dash.com.d
+#    - http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: nginx-service
+#                port:
+#                  number: 80
+#

@@ -66,7 +66,7 @@ function getOptions(verb, data) {
         }
     };
     if (data) {
-        options.body = new URLSearchParams(data);
+        options.body = JSON.stringify(data);
     }
     return options;
 }
