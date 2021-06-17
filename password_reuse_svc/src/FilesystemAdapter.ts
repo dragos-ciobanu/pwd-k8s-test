@@ -20,7 +20,7 @@ export class FilesystemAdapter implements StorageAdapter {
     public fetchAll(): string[] {
         try {
             const fileContent: string = fs.readFileSync(this.filePath, {encoding: 'utf8', flag:'r'});
-            console.log(fileContent);
+
             return fileContent.split(os.EOL).filter((el: string) => el.length > 0);
         } catch (err: unknown) {
             FilesystemAdapter.handleError(err);

@@ -29,13 +29,12 @@ export class PasswordScore {
 
 
     public static getScore(passwordText: string): number {
-        console.log(passwordText);
         let score: number = 0;
         let requirementsFulfilled: number = 0;
 
         for (let strengthTest of PasswordScore.strengthTests["positive"]) {
             const testScore: number = strengthTest(passwordText);
-            console.log(testScore);
+
             if (testScore > 0) {
                 requirementsFulfilled++;
                 score += testScore;
@@ -45,10 +44,8 @@ export class PasswordScore {
         for (let strengthTest of PasswordScore.strengthTests["negative"]) {
             const testScore: number = strengthTest(passwordText);
             score += testScore;
-            console.log(testScore);
         }
 
-        console.log("REQ: " + requirementsFulfilled);
         score += PasswordStrengthTest.requirementsFulfilled(requirementsFulfilled, PasswordScore.MIN_REQUIREMENTS);
 
         return PasswordScore.adjustScoreToInterval(score)

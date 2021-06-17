@@ -9,7 +9,6 @@ export class PasswordList implements ListProvider
     public constructor(storageAdapter: StorageAdapter) {
         this.storageAdapter = storageAdapter;
         this.data = this.storageAdapter.fetchAll();
-        console.log(this.data);
     }
 
     isPasswordInLast10(text: string): boolean {
