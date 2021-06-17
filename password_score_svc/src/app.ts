@@ -10,7 +10,7 @@ app.use(express.urlencoded({
 
 app.use(express.json());
 
-app.post("/api/password/score", async (req, res, next) => {
+app.post("/api/password/score", async (req: any, res: any, next: any) => {
     try {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -20,7 +20,7 @@ app.post("/api/password/score", async (req, res, next) => {
         const response = {
             score: passwordScore
         };
-        res.json(response);
+        await res.json(response);
     } catch (error) {
         next(error)
     }
